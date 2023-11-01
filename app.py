@@ -7,28 +7,24 @@ import tkinter as tk
 root = ttk.Window(themename="solar")
 root.geometry("300x600")
 
-def open_file():
-    file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
-    if file_path:
-        df = pd.read_csv(file_path)
-        display_data(df)
+def browse_file():
+    filepath = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
+    if filepath:
+        df = pd.read_csv(filepath)
+        rows, columns = df.shape
+        num_nan = df.isnull().sum().sum()
+        label1.config(text=f"Number of rows x columns: {rows} x {columns}")
+        label2.config(text=f"Number of NaN values: {num_nan}")
 
-def display_data(df):
-    # Create a new window to display the data
-    data_window = tk.Toplevel()
-    data_window.title("Data Preview")
+root = tk.Tk()
 
-    text_widget = tk.Text(data_window)
-    text_widget.pack()
+browse_button = tk.Button(root, text="Browse for CSV file", command=browse_file)
+browse_button.pack(pady=10)
 
-    # Display the first few rows of the DataFrame in the Text widget
-    text_widget.insert(tk.END, df.head().to_string())
+label1 = tk.Label(root, text="")
+label1.pack()
 
-open_button = ttk.Button(root, text="Open CSV File", command=open_file)
-open_button.grid(row=0, column=0, padx=10, pady=20)
-
-
-b1 = ttk.Button(root, text="Initial Data Analysis", bootstyle=SUCCESS, command=display_data)
-b1.grid(row=1, column=0, padx=5, pady=10)
+label2 = tk.Label(root, text="")
+label2.pack()
 
 root.mainloop()
